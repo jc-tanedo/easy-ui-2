@@ -24,7 +24,14 @@
         </v-card-text>
         <v-card-actions>
           <v-spacer />
-          <v-btn color="primary" nuxt :to="balanceRoute"> Continue </v-btn>
+          <v-btn
+            :disabled="hasMissingFields"
+            color="primary"
+            nuxt
+            :to="balanceRoute"
+          >
+            Continue
+          </v-btn>
         </v-card-actions>
       </v-card>
     </v-col>
@@ -59,6 +66,10 @@ export default {
 
     balanceRoute() {
       return `${this.accountNumber}/${this.additionalInfoType}/${this.extra}`
+    },
+
+    hasMissingFields() {
+      return !this.accountNumber || !this.extra
     },
   },
 }

@@ -2,13 +2,20 @@
   <v-row justify="center" align="center">
     <v-col cols="12" sm="8" md="6">
       <v-card class="logo py-4 d-flex justify-center">
-        <h1>🔭 Track new account</h1>
+        <h1>💰 Your current balance</h1>
       </v-card>
       <v-card class="pa-8">
         <v-card-title class="headline">
           Account number: {{ accountNumber }}
         </v-card-title>
-        <v-card-text> Your balance is: {{ balance }} </v-card-text>
+        <v-card-text>
+          <h1 v-if="!errors.length">₱ {{ balance }}</h1>
+          <div v-else>
+            <div v-for="error in errors" :key="error" class="text-red-500">
+              {{ error }}
+            </div>
+          </div>
+        </v-card-text>
 
         <v-card-actions>
           <v-spacer />
@@ -20,27 +27,52 @@
 </template>
 
 <script lang="ts">
-export default {
+import Vue from 'vue'
+import axios from 'axios'
+
+export default Vue.extend({
   name: 'SpecificAccountPage',
 
   data() {
     return {
-      balance: 0.0,
+      balance: 'Loading...' as number | string,
+      errors: [] as any[],
     }
   },
 
   computed: {
-    accountNumber() {
+    accountNumber(): string {
       return this.$route.params.account
     },
 
-    infoType() {
+    infoType(): string {
       return this.$route.params.type
     },
 
-    additionalInfo() {
+    additionalInfo(): string {
       return this.$route.params.extra
     },
   },
-}
+
+  mounted() {
+    this.fetchBalance()
+  },
+
+  methods: {
+    async fetchBalance() {
+      try {
+        const response = await axios.get('/api/get-balance', {
+          params: {
+            account: this.accountNumber,
+            type: this.infoType,
+            extra: this.additionalInfo,
+          },
+        })
+        this.balance = response.data.balance
+      } catch (error: any) {
+        this.errors.push(error.message)
+      }
+    },
+  },
+})
 </script>
