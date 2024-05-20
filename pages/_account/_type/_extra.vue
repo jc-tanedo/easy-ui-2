@@ -19,7 +19,7 @@
 
         <v-card-actions>
           <v-spacer />
-          <v-btn color="primary" nuxt to="/"> Go back </v-btn>
+          <v-btn color="primary" nuxt to="/">Check another</v-btn>
         </v-card-actions>
       </v-card>
     </v-col>
